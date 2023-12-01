@@ -20,11 +20,19 @@
             <div class="row">
                 {% for post in posts %}
                 <div class="col-lg-6 mb-4">
-                    <div class="card">
+                    <div class="card position-relative">
+                        <!-- Author information at the top -->
+                        <div class="author-info position-absolute top-0 p-2">
+                            <a href="{% url 'profile' %}">
+                                <img src="{{ post.author.profile.image.url }}" alt="Author Profile" class="rounded-circle" style="width: 30px; height: 30px;">
+                                <span class="text-muted ml-2">{{ post.author.username }}</span>
+
+                            </a>
+                        </div>
                         <a href="{% url 'post' post.slug %}">
-                            <img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="..." />
+                            <img class="card-img-top" src="{{post.thumbnail.url}}" alt="..." />
                         </a>
-                        <div class="card-body">
+                        <div class="card-body mt-5">
                             <div class="small text-muted">January 1, 2023</div>
                             <h2 class="card-title h4">{{ post.title }}</h2>
                             <p class="card-text">{{ post.content|slice:":250" }}</p><!-- Trimmed content -->
@@ -37,7 +45,6 @@
                 {% endif %}
                 {% endfor %}
             </div>
-        
             <!-- Pagination-->
             <nav aria-label="Pagination">
                 <hr class="my-0" />

@@ -1,5 +1,6 @@
 {% extends 'blog/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
     <div class="container mt-5">
         <div class="row">
@@ -13,7 +14,8 @@
                                 {% if user.profile.image %}
                                     <img src="{{ user.profile.image.url }}" alt="User Avatar" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
                                 {% else %}
-                                    <img src="{% static 'assets/default.jpg' %}" alt="Default Avatar" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">                                {% endif %}
+                                    <img src="{% static 'assets/default.jpg' %}" alt="Default Avatar" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
+                                {% endif %}
                             </div>
                             <div class="col-md-8">
                                 <p><strong>Username:</strong> {{ user.username }}</p>
@@ -27,6 +29,13 @@
                     </div>
                 </div>
                 <!-- Add more profile-related content or sections here -->
+                <legend>Edit Your Information</legend>
+                <form method="post" enctype="multipart/form-data"> <!-- <multipart/form-data> is used when you want to upload files through that form -->
+                    {% csrf_token %}
+                    {{ u_form|crispy }}
+                    {{ p_form|crispy }}
+                    <button type="submit" class="btn btn-primary btn-block mt-4">Update</button>
+                </form>
             </div>
             <!-- You can add more columns or content to the profile page layout -->
         </div>
