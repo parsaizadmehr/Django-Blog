@@ -1,5 +1,5 @@
 {% extends 'blog/base.html' %}
-
+{% load static %}
 {% block content %}
 
 <!-- Page header with logo and tagline-->
@@ -24,9 +24,12 @@
                         <!-- Author information at the top -->
                         <div class="author-info position-absolute top-0 p-2">
                             <a href="{% url 'profile' %}">
-                                <img src="{{ post.author.profile.image.url }}" alt="Author Profile" class="rounded-circle" style="width: 30px; height: 30px;">
+                            {% if user.profile.image %}
+                                <img src="{{ user.profile.image.url }}" alt="User Avatar" class="rounded-circle" style="width: 30px; height: 30px;">
+                            {% else %}
+                                <img src="{% static 'assets/default.jpg' %}" alt="User Avatar" class="rounded-circle" style="width: 30px; height: 30px;">
+                            {% endif %}
                                 <span class="text-muted ml-2">{{ post.author.username }}</span>
-
                             </a>
                         </div>
                         <a href="{% url 'post' post.slug %}">

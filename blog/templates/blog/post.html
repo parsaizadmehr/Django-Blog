@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+{% load crispy_forms_tags %}
 {% block post_detail %}
     
 <!-- Page content-->
@@ -18,11 +19,10 @@
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
                 </header>
                 <!-- Preview image figure-->
-                <figure class="mb-4"><img class="img-fluid rounded" src="https://dummyimage.com/900x400/ced4da/6c757d.jpg" alt="..." /></figure>
+                <figure class="mb-4"><img class="img-fluid rounded" src="{{post.thumbnail.url}}"/></figure>
                 <!-- Post content-->
                 <section class="mb-5">
                     <p class="fs-5 mb-4">{{post.content}}</p>
-                    <!-- <h2 class="fw-bolder mb-4 mt-5">I have odd cosmic thoughts every day</h2> -->
                 </section>
             </article>
             <!-- Comments section-->
@@ -30,43 +30,41 @@
                 <div class="card bg-light">
                     <div class="card-body">
                         <!-- Comment form-->
-                        <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
-                        <!-- Comment with nested comments-->
-                        <div class="d-flex mb-4">
-                            <!-- Parent comment-->
-                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                If you're going to lead a space frontier, it has to be government; it'll never be private enterprise. Because the space frontier is dangerous, and it's expensive, and it has unquantified risks.
-                                <!-- Child comment 1-->
-                                <div class="d-flex mt-4">
-                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                    <div class="ms-3">
-                                        <div class="fw-bold">Commenter Name</div>
-                                        And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
-                                    </div>
-                                </div>
-                                <!-- Child comment 2-->
-                                <div class="d-flex mt-4">
-                                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                                    <div class="ms-3">
-                                        <div class="fw-bold">Commenter Name</div>
-                                        When you put money directly to a problem, it makes a good headline.
-                                    </div>
-                                </div>
-                            </div>
+                        {% if new_comment %}
+                        <div class="alert alert-success" role="alert">
+                          Your comment is awaiting moderation
                         </div>
-                        <!-- Single comment-->
-                        <div class="d-flex">
-                            <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
-                            <div class="ms-3">
-                                <div class="fw-bold">Commenter Name</div>
-                                When I look at the universe and all the ways the universe wants to kill us, I find it hard to reconcile that with statements of beneficence.
-                            </div>
-                        </div>
+                        {% else %}
+                        <form method="post" class="mb-4">
+                            {% csrf_token %}
+                            {{ comment_form | crispy }} 
+                            <button type="submit" class="btn btn-primary">Post Comment</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
             </section>
+            
+            <!-- Existing comments -->
+            <section class="mb-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Comments</h5>
+                        {% for comment in comments %}
+                            <div class="media mb-4">
+                                <img class="mr-3 rounded-circle" src="{{user.profile.image.url}}" alt="User Avatar" style="width: 50px; height: 50px;">
+                                <div class="media-body">
+                                    <h6 class="mt-0">{{ comment.name }}</h6>
+                                    <p>{{ comment.body }}</p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No comments yet. Be the first to comment!</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+            
         </div>
     </div>
 </div>
