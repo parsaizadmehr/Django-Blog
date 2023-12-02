@@ -25,9 +25,9 @@
                         <div class="author-info position-absolute top-0 p-2">
                             <a href="{% url 'profile' %}">
                             {% if user.profile.image %}
-                                <img src="{{ user.profile.image.url }}" alt="User Avatar" class="rounded-circle" style="width: 30px; height: 30px;">
+                                <img src="{{ post.author.profile.image.url }}" class="rounded-circle" style="width: 30px; height: 30px;">
                             {% else %}
-                                <img src="{% static 'assets/default.jpg' %}" alt="User Avatar" class="rounded-circle" style="width: 30px; height: 30px;">
+                                <img src="{% static 'assets/default.jpg' %}" class="rounded-circle" style="width: 30px; height: 30px;">
                             {% endif %}
                                 <span class="text-muted ml-2">{{ post.author.username }}</span>
                             </a>
@@ -36,7 +36,7 @@
                             <img class="card-img-top" src="{{post.thumbnail.url}}" alt="..." />
                         </a>
                         <div class="card-body mt-5">
-                            <div class="small text-muted">January 1, 2023</div>
+                            <div class="small text-muted">{{post.created_at}}</div>
                             <h2 class="card-title h4">{{ post.title }}</h2>
                             <p class="card-text">{{ post.content|slice:":250" }}</p><!-- Trimmed content -->
                             <a class="btn btn-primary" href="{% url 'post' post.slug %}">Read more →</a>

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.utils.text import slugify
 
 class Post(models.Model):
     STATUS_CHOICES = [
@@ -12,10 +14,18 @@ class Post(models.Model):
     thumbnail = models.ImageField(upload_to="uploads")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="p")
     
     def __str__(self):
         return f"{self.title} by {self.author}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:  # If slug is empty
+            self.slug = slugify(self.title)  # Generate slug from title
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("post", kwargs={"slug": self.slug})
 
 
 class Comment(models.Model):

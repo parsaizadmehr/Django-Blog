@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from decouple import config
 from .models import Post
@@ -11,10 +12,43 @@ class PostListView(ListView):
     model = Post
     template_name = "blog/index.html"
     context_object_name = "posts"
-    ordering = ["-created_at"]
 
     def get_queryset(self):
-        return Post.objects.filter(status="p")
+        return Post.objects.filter(status="p").order_by("-created_at")
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    context_object_name = "post"
+    fields = ["title", "content", "thumbnail", "status"]
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    context_object_name = "post"
+    fields = ["title", "content", "thumbnail", "status"]
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    success_url = "/"
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.author:
+            return True
+        return False
     
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
@@ -59,7 +93,7 @@ def contact(request):
                 send_mail(
                     f"New Contact Form Submission from {name}",
                     f"Message from {email}\n {message}",
-                    config('EMAIL_HOST_USE'),
+                    config('EMAIL_HOST_USER'),
                     [config('RECIPIENT_EMAIL')],
                     fail_silently=False,
                 )

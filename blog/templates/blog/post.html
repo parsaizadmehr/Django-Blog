@@ -14,6 +14,7 @@
                     <h1 class="fw-bolder mb-1">{{post.title}}</h1>
                     <!-- Post meta content-->
                     <div class="text-muted fst-italic mb-2">{{post.created_at}} by {{post.author}}</div>
+                                        
                     <!-- Post categories-->
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
@@ -23,6 +24,10 @@
                 <!-- Post content-->
                 <section class="mb-5">
                     <p class="fs-5 mb-4">{{post.content}}</p>
+                    {% if post.author == user %}
+                        <a class="btn btn-secondary" href="{% url 'update' post.slug %}" >Update</a>
+                        <a class="btn btn-danger" href="{% url 'delete' post.slug %}" >Delete</a>
+                    {% endif %}
                 </section>
             </article>
             <!-- Comments section-->
