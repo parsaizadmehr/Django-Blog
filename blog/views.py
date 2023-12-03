@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from decouple import config
-from .models import Post
+from .models import Post, Category
 from .forms import ContactUsForm, CommentForm
 
 class PostListView(ListView):
@@ -13,13 +13,18 @@ class PostListView(ListView):
     template_name = "blog/index.html"
     context_object_name = "posts"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()  # Fetch all categories
+        return context
+
     def get_queryset(self):
         return Post.objects.filter(status="p").order_by("-created_at")
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     context_object_name = "post"
-    fields = ["title", "content", "thumbnail", "status"]
+    fields = ["title", "content", "thumbnail","categories", "status"]
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -28,7 +33,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     context_object_name = "post"
-    fields = ["title", "content", "thumbnail", "status"]
+    fields = ["title", "content", "thumbnail","categories", "status"]
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -75,6 +80,15 @@ def post_detail(request, slug):
         'comment_form': comment_form,
         }
     return render(request, "blog/post.html", context)
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    posts = category.posts.all()
+    context = {
+        "category": category,
+        "posts": posts
+    }
+    return render(request, "blog/category_detail.html", context)
 
 def about(request):
     return render(request, "blog/about.html")

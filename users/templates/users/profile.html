@@ -38,6 +38,33 @@
                 </form>
             </div>
             <!-- You can add more columns or content to the profile page layout -->
+            <h2>Posts by {{ request.user.username }}</h2>
+                <div class="row">
+                    {% for post in user_posts %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{post.title}} |
+                                        
+                                        {% if post.status == 'p' %}
+                                            <p class="badge bg-primary text-decoration-none link-light">Published</p>
+                                        {% else %}
+                                            <p class="badge bg-warning text-decoration-none link-light">Draft</p>
+                                        {% endif %}
+                                        
+                                        </h5>
+                                    <p class="card-text">{{ post.content }}</p>
+                                    <div>
+                                        <a class="btn btn-secondary" href="{% url 'update' post.slug %}" >Update</a>
+                                        <a class="btn btn-danger" href="{% url 'delete' post.slug %}" >Delete</a>
+                                    </div>
+                                    <!-- Add more post details here -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
         </div>
     </div>
 {% endblock content %}

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserInfoForm, ProfileForm
 from .models import Profile
+from blog.models import Post
 
 def register(request):
     if request.method == "POST":
@@ -23,7 +24,7 @@ def register(request):
 
 @login_required
 def profile(request):
-    
+    user_posts = Post.objects.filter(author=request.user)
     if request.method == "POST":
         u_form = UserInfoForm(request.POST, instance=request.user)
         p_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
@@ -41,5 +42,6 @@ def profile(request):
     context = {
         "u_form": u_form,
         "p_form": p_form,
+        "user_posts": user_posts
     }
     return render(request, "users/profile.html", context)

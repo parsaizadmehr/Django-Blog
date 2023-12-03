@@ -33,7 +33,7 @@
                             </a>
                         </div>
                         <a href="{% url 'post' post.slug %}">
-                            <img class="card-img-top" src="{{post.thumbnail.url}}" alt="..." />
+                            <img class="card-img-top" src="{{post.thumbnail.url}}" />
                         </a>
                         <div class="card-body mt-5">
                             <div class="small text-muted">{{post.created_at}}</div>
@@ -79,20 +79,16 @@
                 <div class="card-header">Categories</div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">Web Design</a></li>
-                                <li><a href="#!">HTML</a></li>
-                                <li><a href="#!">Freebies</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">JavaScript</a></li>
-                                <li><a href="#!">CSS</a></li>
-                                <li><a href="#!">Tutorials</a></li>
-                            </ul>
-                        </div>
+                        {% for category in categories %}
+                            <div class="col-sm-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a href="{% url 'category' slug=category.slug %}">{{ category.name }}</a></li>
+                                </ul>
+                            </div>
+                            {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                                </div><div class="row">
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>

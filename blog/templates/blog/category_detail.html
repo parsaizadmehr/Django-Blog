@@ -1,0 +1,58 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Page header with category name-->
+    <header class="py-5 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center my-5">
+                <h1 class="fw-bolder">Category: {{ category.name }}</h1>
+                <!-- Optionally, add a description or information about the category -->
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="row">
+            <!-- Blog entries related to the category -->
+            <div class="col-lg-8">
+                <div class="row">
+                    {% for post in posts %}
+                        <div class="col-lg-6 mb-4">
+                            <div class="card position-relative">
+                                <!-- Author information -->
+                                <div class="author-info position-absolute top-0 p-2">
+                                    <a href="{% url 'profile' %}">
+                                        {% if post.author.profile.image %}
+                                            <img src="{{ post.author.profile.image.url }}" class="rounded-circle" style="width: 30px; height: 30px;">
+                                        {% else %}
+                                            <img src="{% static 'assets/default.jpg' %}" class="rounded-circle" style="width: 30px; height: 30px;">
+                                        {% endif %}
+                                        <span class="text-muted ml-2">{{ post.author.username }}</span>
+                                    </a>
+                                </div>
+                                <a href="{% url 'post' post.slug %}">
+                                    <img class="card-img-top" src="{{ post.thumbnail.url }}" />
+                                </a>
+                                <div class="card-body mt-5">
+                                    <div class="small text-muted">{{ post.created_at }}</div>
+                                    <h2 class="card-title h4">{{ post.title }}</h2>
+                                    <p class="card-text">{{ post.content|slice:":250" }}</p><!-- Trimmed content -->
+                                    <a class="btn btn-primary" href="{% url 'post' post.slug %}">Read more →</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% if forloop.counter2|divisibleby:2 and not forloop.last %}
+                            </div><div class="row">
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Include sidebar widgets or content -->
+                <!-- Search widget, Categories widget, Side Widget, etc. -->
+            </div>
+        </div>
+    </div>
+{% endblock content %}
