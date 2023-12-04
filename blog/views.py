@@ -12,10 +12,11 @@ class PostListView(ListView):
     model = Post
     template_name = "blog/index.html"
     context_object_name = "posts"
+    paginate_by = 8
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()  # Fetch all categories
+        context["categories"] = Category.objects.all()  # Fetch all categories
         return context
 
     def get_queryset(self):
@@ -58,10 +59,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
     comments = post.comments.filter(active=True)
+    categories  = post.categories.all()
 
     new_comment = None    # Comment posted
     
-    if request.method == 'POST':
+    if request.method == "POST":
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
             # Create Comment object but don't save to database yet
@@ -74,10 +76,11 @@ def post_detail(request, slug):
         comment_form = CommentForm()
 
     context = {
-        'post': post,
-        'comments': comments,
-        'new_comment': new_comment,
-        'comment_form': comment_form,
+        "post": post,
+        "comments": comments,
+        "new_comment": new_comment,
+        "comment_form": comment_form,
+        "categories": categories,
         }
     return render(request, "blog/post.html", context)
 
@@ -107,8 +110,8 @@ def contact(request):
                 send_mail(
                     f"New Contact Form Submission from {name}",
                     f"Message from {email}\n {message}",
-                    config('EMAIL_HOST_USER'),
-                    [config('RECIPIENT_EMAIL')],
+                    config("EMAIL_HOST_USER"),
+                    [config("RECIPIENT_EMAIL")],
                     fail_silently=False,
                 )
                 messages.success(request, f"{name}, Thanks for reaching us.")
