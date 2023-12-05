@@ -1,6 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import UserRegisterForm, UserInfoForm, ProfileForm
 from .models import Profile
 from blog.models import Post
@@ -45,3 +46,13 @@ def profile(request):
         "user_posts": user_posts
     }
     return render(request, "users/profile.html", context)
+
+@login_required
+def user_profile(request, username):
+    # User.objects.get(username=username)
+    user_profile = get_object_or_404(User, username=username)
+    context = {
+        "user_profile": user_profile,
+    }
+    
+    return render(request, "users/user_profile.html", context)

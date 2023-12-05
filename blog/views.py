@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 from django.contrib import messages
 from decouple import config
 from .models import Post, Category
@@ -20,7 +21,20 @@ class PostListView(ListView):
         return context
 
     def get_queryset(self):
-        return Post.objects.filter(status="p").order_by("-created_at")
+        query = self.request.GET.get('q')  # Get the search query from URL parameters
+
+        if query:
+            filtered_posts = Post.objects.filter(
+                Q(title__icontains=query) | Q(content__icontains=query),
+                status="p"
+            ).order_by("-created_at")
+
+            if not filtered_posts.exists():
+                messages.warning(self.request, f"No results found for '{query}'.")
+
+            return filtered_posts
+        else:
+            return Post.objects.filter(status="p").order_by("-created_at")
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post

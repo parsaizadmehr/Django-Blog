@@ -13,6 +13,9 @@
                         {{ form|crispy }}
                         <button type="submit" class="btn btn-primary btn-block mt-4">Sign In</button>
                     </form>
+                    <small class="text-muted">
+                        Forgot your password? <a class="ml-2" href="{% url 'password_reset' %}">Reset password</a>
+                    </small>
                 </div>
                 <div class="card-footer bg-white border-top">
                     <small class="text-muted">

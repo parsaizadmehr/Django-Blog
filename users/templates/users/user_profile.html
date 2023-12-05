@@ -1,0 +1,32 @@
+<!-- profile.html -->
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">User Information</h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% if user.profile.image %}
+                                <img src="{{ user_profile.profile.image.url }}" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
+                            {% else %}
+                                <img src="{% static 'default.jpg' %}" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <p><strong>Username:</strong> {{ user_profile.username }}</p>
+                            <p><strong>Gender:</strong> {{ user_profile.profile.get_gender_display }}</p>
+                            <p><strong>Joined Date:</strong> {{ user_profile.date_joined|date:"F d, Y" }}</p>
+                            <!-- Adjust the date format as per your preference -->
+                            <!-- Add more profile details here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+{% endblock content %}

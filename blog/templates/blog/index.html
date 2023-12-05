@@ -23,7 +23,7 @@
                     <div class="card position-relative">
                         <!-- Author information at the top -->
                         <div class="author-info position-absolute top-0 p-2">
-                            <a href="{% url 'profile' %}">
+                            <a href="{% url 'user_profile' username=post.author.username %}">
                             {% if user.profile.image %}
                                 <img src="{{ post.author.profile.image.url }}" class="rounded-circle" style="width: 30px; height: 30px;">
                             {% else %}
@@ -92,12 +92,15 @@
             <div class="card mb-4">
                 <div class="card-header">Search</div>
                 <div class="card-body">
-                    <div class="input-group">
-                        <input class="form-control" type="text" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
-                        <button class="btn btn-primary" id="button-search" type="button">Go!</button>
-                    </div>
+                    <form action="{% url 'index' %}" method="GET">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="q" placeholder="Enter search term..." aria-label="Enter search term..." aria-describedby="button-search" />
+                            <button class="btn btn-primary" id="button-search" type="submit">Go!</button>
+                        </div>
+                    </form>
                 </div>
             </div>
+
             <!-- Categories widget-->
             <div class="card mb-4">
                 <div class="card-header">Categories</div>
